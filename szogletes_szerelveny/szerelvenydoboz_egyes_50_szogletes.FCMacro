@@ -1,0 +1,92 @@
+# Szögletes külsejű egyes szerelvénydoboz, 50 mm mély – paraméteres FreeCAD modell generálása.
+# Futtatás: FreeCAD-ben Makró -> Futtatás, vagy:  freecadcmd szerelvenydoboz_egyes_50_szogletes.FCMacro
+# Kimenet (a makró mappájába): .FCStd (paraméteres, Parameterek táblázattal), .stl, .step
+import FreeCAD, Mesh, MeshPart, os
+
+NAME = "szerelvenydoboz_egyes_50_szogletes"
+try:
+    D = os.path.dirname(os.path.abspath(__file__))
+except NameError:
+    D = os.getcwd()
+
+params = [
+    ("Melyseg", "50", "Doboz teljes melysege a perem tetejetol a hatlapig (mm)"),
+    ("Kulso_a", "67", "Negyzetes test kulso oldalhossza (mm)"),
+    ("Belso_d", "62", "Belso (kerek) ureg atmeroje (mm)"),
+    ("Fenek_vastag", "2", "Hatlap vastagsaga (mm)"),
+    ("Perem_a", "74", "Elulso negyzetes perem oldalhossza (mm)"),
+    ("Perem_vastag", "1.5", "Elulso perem vastagsaga (mm)"),
+    ("Csavar_tav", "60", "Csavartornyok tavolsaga (szabvanyos 60 mm)"),
+    ("Torony_d", "7", "Csavartorony atmeroje (mm)"),
+    ("Csavar_furat_d", "2.8", "Csavarfurat atmeroje (mm) - M3/M3.5 onmetszohoz"),
+    ("Csavar_furat_mely", "15", "Csavarfurat melysege a perem tetejetol (mm)"),
+    ("Hatso_d", "20", "Hatlapi kitorheto nyilas (korong) atmeroje (mm)"),
+    ("Res_sz", "0.6", "Kitoro korong koruli res szelessege (mm)"),
+    ("Hid_sz", "0.8", "Kitoro korongot tarto 8 hid szelessege (mm)"),
+]
+
+doc = FreeCAD.newDocument(NAME)
+sh = doc.addObject("Spreadsheet::Sheet", "Parameterek")
+sh.set("A1", "Parameter"); sh.set("B1", "Ertek"); sh.set("C1", "Leiras")
+for i, (n, v, c) in enumerate(params, start=2):
+    sh.set(f"A{i}", n); sh.set(f"B{i}", v); sh.set(f"C{i}", c); sh.setAlias(f"B{i}", n)
+doc.recompute()
+
+body = doc.addObject("PartDesign::Body", "Body")
+
+def add(kind, name):
+    o = doc.addObject("PartDesign::" + kind, name)
+    body.addObject(o)
+    return o
+
+def ex(o, prop, e):
+    o.setExpression(prop, e.replace("$", "Parameterek."))
+
+# Négyzetes test (a perem alatt)
+test = add("AdditiveBox", "Test")
+ex(test, "Length", "$Kulso_a"); ex(test, "Width", "$Kulso_a"); ex(test, "Height", "$Melyseg - $Perem_vastag")
+ex(test, ".Placement.Base.x", "-$Kulso_a / 2"); ex(test, ".Placement.Base.y", "-$Kulso_a / 2")
+
+# Négyzetes elülső perem
+perem = add("AdditiveBox", "Perem")
+ex(perem, "Length", "$Perem_a"); ex(perem, "Width", "$Perem_a"); ex(perem, "Height", "$Perem_vastag")
+ex(perem, ".Placement.Base.x", "-$Perem_a / 2"); ex(perem, ".Placement.Base.y", "-$Perem_a / 2")
+ex(perem, ".Placement.Base.z", "$Melyseg - $Perem_vastag")
+
+# Kerek belső üreg
+ureg = add("SubtractiveCylinder", "Ureg")
+ex(ureg, "Radius", "$Belso_d / 2"); ex(ureg, "Height", "$Melyseg - $Fenek_vastag + 1")
+ex(ureg, ".Placement.Base.z", "$Fenek_vastag")
+
+# Csavartornyok és csavarfuratok (60 mm osztás)
+for sign, side in (("", "jobb"), ("-", "bal")):
+    t = add("AdditiveCylinder", "Csavartorony_" + side)
+    ex(t, "Radius", "$Torony_d / 2"); ex(t, "Height", "$Melyseg - $Fenek_vastag")
+    ex(t, ".Placement.Base.x", sign + "$Csavar_tav / 2"); ex(t, ".Placement.Base.z", "$Fenek_vastag")
+for sign, side in (("", "jobb"), ("-", "bal")):
+    h = add("SubtractiveCylinder", "Csavarfurat_" + side)
+    ex(h, "Radius", "$Csavar_furat_d / 2"); ex(h, "Height", "$Csavar_furat_mely + 1")
+    ex(h, ".Placement.Base.x", sign + "$Csavar_tav / 2"); ex(h, ".Placement.Base.z", "$Melyseg - $Csavar_furat_mely")
+
+# Hátlapi kitörhető nyílás: körgyűrű alakú rés, a korongot 8 híd tartja
+res = add("SubtractiveCylinder", "Hatso_kitoro_res")
+ex(res, "Radius", "$Hatso_d / 2 + $Res_sz"); ex(res, "Height", "$Fenek_vastag + 2"); ex(res, ".Placement.Base.z", "-1")
+korong = add("AdditiveCylinder", "Hatso_kitoro_korong")
+ex(korong, "Radius", "$Hatso_d / 2"); ex(korong, "Height", "$Fenek_vastag")
+hid = add("AdditiveBox", "Hatso_kitoro_hid")
+ex(hid, "Length", "$Res_sz + 0.4"); ex(hid, "Width", "$Hid_sz"); ex(hid, "Height", "$Fenek_vastag")
+ex(hid, ".Placement.Base.x", "$Hatso_d / 2 - 0.2"); ex(hid, ".Placement.Base.y", "-$Hid_sz / 2")
+doc.recompute()
+pp = add("PolarPattern", "Hatso_kitoro_hidak")
+pp.Originals = [hid]
+pp.Axis = (body.Origin.OriginFeatures[2], [""])
+pp.Angle = 360
+pp.Occurrences = 8
+body.Tip = pp
+doc.recompute()
+
+shape = body.Shape
+print("ervenyes:", shape.isValid(), "testek:", len(shape.Solids), "terfogat (cm3):", round(shape.Volume / 1000, 2))
+doc.saveAs(os.path.join(D, NAME + ".FCStd"))
+Mesh.Mesh(MeshPart.meshFromShape(Shape=shape, LinearDeflection=0.02, AngularDeflection=0.08)).write(os.path.join(D, NAME + ".stl"))
+shape.exportStep(os.path.join(D, NAME + ".step"))
