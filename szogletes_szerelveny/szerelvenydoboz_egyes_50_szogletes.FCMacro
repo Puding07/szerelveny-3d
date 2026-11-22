@@ -11,10 +11,10 @@ except NameError:
 
 params = [
     ("Melyseg", "50", "Doboz teljes melysege a perem tetejetol a hatlapig (mm)"),
-    ("Kulso_a", "67", "Negyzetes test kulso oldalhossza (mm)"),
+    ("Kulso_a", "85", "Negyzetes test kulso oldalhossza, vegig azonos (mm)"),
     ("Belso_d", "62", "Belso (kerek) ureg atmeroje (mm)"),
     ("Fenek_vastag", "2", "Hatlap vastagsaga (mm)"),
-    ("Perem_a", "74", "Elulso negyzetes perem oldalhossza (mm)"),
+    ("Perem_a", "=Kulso_a", "Elulso perem oldalhossza (mm) - alapbol egyenlo a testtel, igy a kulso vegig egyenes"),
     ("Perem_vastag", "1.5", "Elulso perem vastagsaga (mm)"),
     ("Csavar_tav", "60", "Csavartornyok tavolsaga (szabvanyos 60 mm)"),
     ("Torony_d", "7", "Csavartorony atmeroje (mm)"),

@@ -1,7 +1,7 @@
 # Szögletes egyes szerelvénydoboz – 50 mm mély
 
 3D nyomtatható, süllyesztett (falba építhető) **egyes** szerelvénydoboz **négyzetes külsővel**.
-A főágon lévő kettes/hármas dobozok kialakítását követi (csavartornyok, perem, kitörhető nyílás), de a kerek oldalfal helyett négyzetes a külseje, és kitörhető nyílás **csak a hátlapon** van.
+A főágon lévő kettes/hármas dobozok kialakítását követi (csavartornyok, kitörhető nyílás), de a kerek oldalfal helyett négyzetes, végig 85 × 85 mm-es a külseje (nincs kiálló perem), és kitörhető nyílás **csak a hátlapon** van.
 
 ## Fájlok
 
@@ -12,21 +12,20 @@ A főágon lévő kettes/hármas dobozok kialakítását követi (csavartornyok,
 
 ## Főbb méretek
 
-- Befoglaló méret: 74 × 74 × 50 mm (perem), a test 67 × 67 mm
-- Mélység a perem tetejétől a hátlapig: **50 mm**
-- Belső (kerek) üreg: Ø62 mm, hátlap: 2 mm, a falvastagság az oldalak közepén 2,5 mm
-- Perem: 74 × 74 mm, 1,5 mm vastag
+- Befoglaló méret: **85 × 85 × 50 mm**, a külső végig egyenes
+- Mélység az elülső síktól a hátlapig: **50 mm**
+- Belső (kerek) üreg: Ø62 mm, hátlap: 2 mm, a falvastagság az oldalak közepén 11,5 mm
 - Csavartávolság: 60 mm, Ø7 mm-es csavartornyok, 2,8 mm-es furat (M3/M3,5 önmetszőhöz), 15 mm mély
 - Hátlapi kitörhető nyílás: Ø20 mm, 0,6 mm-es rés, 8 db 0,8 mm-es tartóhíd
 - Oldalfalon nincs nyílás
-- Anyagtérfogat: ~83,2 cm³
+- Anyagtérfogat: ~218,6 cm³
 
 ## Paraméterek
 
-A `Parameterek` táblázat celláinak átírásával módosítható (pl. `Melyseg`, `Kulso_a`, `Belso_d`, `Perem_a`, `Csavar_tav`, `Hatso_d`), minden elem követi a változást.
+A `Parameterek` táblázat celláinak átírásával módosítható (pl. `Melyseg`, `Kulso_a`, `Belso_d`, `Csavar_tav`, `Hatso_d`). A `Perem_a` alapból `=Kulso_a`; ha nagyobbra állítod, kiálló perem lesz a doboz elején. Minden elem követi a változást.
 
 ## Nyomtatás
 
-- Hátlappal lefelé nyomtatható, a perem felfelé néz. A perem 3,5 mm-rel nyúlik túl az oldalfalon.
+- Hátlappal lefelé nyomtatható, a nyitott oldal felfelé néz; túlnyúlás nincs, támasz nem kell.
 - A kitörő rése 0,6 mm; ügyelj rá, hogy a szeletelő ne töltse ki.
 - A modell FreeCAD 1.1-gyel készült.
