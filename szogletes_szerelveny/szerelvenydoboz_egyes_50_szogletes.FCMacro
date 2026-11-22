@@ -23,6 +23,7 @@ params = [
     ("Hatso_d", "20", "Hatlapi kitorheto nyilas (korong) atmeroje (mm)"),
     ("Res_sz", "0.6", "Kitoro korong koruli res szelessege (mm)"),
     ("Hid_sz", "0.8", "Kitoro korongot tarto 8 hid szelessege (mm)"),
+    ("Lekerekites_r", "3.5", "Kulso elek lekerekitesi sugara (mm)"),
 ]
 
 doc = FreeCAD.newDocument(NAME)
@@ -52,6 +53,14 @@ perem = add("AdditiveBox", "Perem")
 ex(perem, "Length", "$Perem_a"); ex(perem, "Width", "$Perem_a"); ex(perem, "Height", "$Perem_vastag")
 ex(perem, ".Placement.Base.x", "-$Perem_a / 2"); ex(perem, ".Placement.Base.y", "-$Perem_a / 2")
 ex(perem, ".Placement.Base.z", "$Melyseg - $Perem_vastag")
+perem.Refine = True  # a test es a perem egyetlen hasabba olvad
+
+# Kulso elek lekerekitese (mind a 12 el)
+lek = add("Fillet", "Kulso_lekerekites")
+lek.Base = (perem, ["Edge1"])
+lek.UseAllEdges = True
+ex(lek, "Radius", "$Lekerekites_r")
+doc.recompute()
 
 # Kerek belső üreg
 ureg = add("SubtractiveCylinder", "Ureg")

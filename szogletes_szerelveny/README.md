@@ -12,17 +12,17 @@ A főágon lévő kettes/hármas dobozok kialakítását követi (csavartornyok,
 
 ## Főbb méretek
 
-- Befoglaló méret: **85 × 85 × 50 mm**, a külső végig egyenes
+- Befoglaló méret: **85 × 85 × 50 mm**, a külső végig egyenes, minden külső él 3,5 mm-es sugárral lekerekítve
 - Mélység az elülső síktól a hátlapig: **50 mm**
 - Belső (kerek) üreg: Ø62 mm, hátlap: 2 mm, a falvastagság az oldalak közepén 11,5 mm
 - Csavartávolság: 60 mm, Ø7 mm-es csavartornyok, 2,8 mm-es furat (M3/M3,5 önmetszőhöz), 15 mm mély
 - Hátlapi kitörhető nyílás: Ø20 mm, 0,6 mm-es rés, 8 db 0,8 mm-es tartóhíd
 - Oldalfalon nincs nyílás
-- Anyagtérfogat: ~218,6 cm³
+- Anyagtérfogat: ~216,3 cm³
 
 ## Paraméterek
 
-A `Parameterek` táblázat celláinak átírásával módosítható (pl. `Melyseg`, `Kulso_a`, `Belso_d`, `Csavar_tav`, `Hatso_d`). A `Perem_a` alapból `=Kulso_a`; ha nagyobbra állítod, kiálló perem lesz a doboz elején. Minden elem követi a változást.
+A `Parameterek` táblázat celláinak átírásával módosítható (pl. `Melyseg`, `Kulso_a`, `Lekerekites_r`, `Belso_d`, `Csavar_tav`, `Hatso_d`). A `Perem_a` alapból `=Kulso_a`; ha nagyobbra állítod, kiálló perem lesz a doboz elején. Minden elem követi a változást.
 
 ## Nyomtatás
 
